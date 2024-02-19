@@ -2,14 +2,23 @@ const todoInput = document.querySelector('.todo-input');
 const todoBtn = document.querySelector('.todo-add-btn');
 const todoContainer = document.querySelector('.todo-container');
 
-todoBtn.addEventListener('click', () => {
+todoBtn.addEventListener('click', handleTodoInput)
+
+document.addEventListener('keypress', (e) => {
+    if (e.key === "Enter") {
+        handleTodoInput();
+    }
+});
+
+function handleTodoInput() {
     const todoTitle = todoInput.value.trim();
 
     if (todoTitle !== "") {
         displayTodo(todoTitle);
         todoInput.value = null;
     }
-})
+}
+
 
 function displayTodo(todo) {
     const todoItem = document.createElement('div');
@@ -17,7 +26,7 @@ function displayTodo(todo) {
     todoContainer.appendChild(todoItem);
 
     const todoTitle = document.createElement('span');
-    todoTitle.classList.add('todo-title');
+    todoTitle.classList.add('todo-text');
     todoItem.appendChild(todoTitle);
 
     const todoActionBtns = document.createElement('div');
@@ -37,7 +46,7 @@ function displayTodo(todo) {
     todoTitle.textContent = todo;
 
     todoDoneBtn.addEventListener('click', (e) => {
-        todoTitle.style.textDecoration = (!todoTitle.style.textDecoration)?"line-through":"";
+        todoTitle.style.textDecoration = (!todoTitle.style.textDecoration) ? "line-through" : "";
     })
 
     todoRemoveBtn.addEventListener('click', () => {
