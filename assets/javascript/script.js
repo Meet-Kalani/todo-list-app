@@ -2,20 +2,20 @@ const todoInput = document.querySelector('.todo-input');
 const todoBtn = document.querySelector('.todo-add-btn');
 const todoContainer = document.querySelector('.todo-container');
 
-todoBtn.addEventListener('click', handleTodoInput)
+todoBtn.addEventListener('click', addTodoItem)
 
 document.addEventListener('keypress', (e) => {
-    if (e.key === "Enter") {
-        handleTodoInput();
+    if (e.key === "Enter" && document.activeElement === todoInput) {
+        addTodoItem();
     }
 });
 
-function handleTodoInput() {
+function addTodoItem() {
     const todoTitle = todoInput.value.trim();
 
     if (todoTitle !== "") {
         displayTodo(todoTitle);
-        todoInput.value = null;
+        todoInput.value = '';
     }
 }
 
