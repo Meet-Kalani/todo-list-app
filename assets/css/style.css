@@ -1,24 +1,31 @@
-/* NOTE make it responsive and fixed searach vbar */
-
+/* Resetting default settings */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html, body {
-    height: 100%;
-}
-
+/* General styling */
 body,
 button,
 input{
     font-family: "Poppins", sans-serif;
 }
 
+/* Main styling */
+body{
+    background-color: #f4f4f4;
+}
+
 #todo{
-    width: min(90%,650px);
+    max-width: 650px;
+    width: 90%;
     margin: auto;
+    background-color: #fff;
+    padding: 24px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 36px;
+    border-radius: 5px;
 }
 
 .todo-title{
@@ -29,14 +36,14 @@ input{
 .todo-input-container{
     display: flex;
     gap: 8px;
-    position: sticky;
 }
 
 .todo-input-container .todo-input {
     flex: 3;
+    width: 100%;
     border: 3px solid #d3ead3;
     outline: none;
-    padding: 8px 16px;
+    padding: 8px 12px;
     font-size: 16px;
     border-radius: 6px;
 }
@@ -46,6 +53,7 @@ input{
     border: 3px solid #d3ead3;
     background-color: #ee6c4d;
     border-radius: 6px;
+    font-size: 1.5rem;
     cursor: pointer;
 }
 
@@ -54,28 +62,26 @@ input{
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 16px;
+    margin-top: 24px;
 }
 
-.todo-container .todo-item {
+.todo-container .todo-item,
+.todo-container .todo-action-btns  {
     display: flex;
+    align-items: center;
 }
 
 .todo-container .todo-text {
     flex: 1;
     font-weight: 300;
+    overflow-x: hidden;
 }
 
-.todo-container .todo-action-btns {
-    display: flex;
-    gap: 8px;
+.todo-container .todo-action-btns{
+    gap: 12px;
 }
 
-.todo-container .todo-done-btn,
-.todo-container .todo-remove-btn {
-    padding: 6px 12px;
-    border: 3px solid #d3ead3;
-    background-color: #ee6c4d;
-    border-radius: 6px;
+.todo-container .todo-action-btns img{
+    width: 36px;
     cursor: pointer;
 }
