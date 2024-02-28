@@ -1,57 +1,98 @@
 // DOM elements
-const todoInputElement = document.querySelector('.todo-input');
-const todoBtnElement = document.querySelector('.todo-add-btn');
-const todoContainerElement = document.querySelector('.todo-container');
+const todoInputElement = document.querySelector(".todo-input");
+const addTodoBtnElement = document.querySelector(".todo-add-btn");
+const todoContainerElement = document.querySelector(".todo-container");
 
-// Event listeners for triggering processing of user input 
-todoBtnElement.addEventListener('click', addTodoItem)
-todoInputElement.addEventListener('keypress', (e) => {
-    if (e.key === "Enter") {
-        addTodoItem();
-    }
+let savedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+let currentTodo = {};
+let todoId = 0;
+
+// Display locally stored todo's
+document.addEventListener("DOMContentLoaded", () => {
+  savedTodos.forEach((savedTodo) => {
+    createTodo(savedTodo);
+  });
+});
+
+// Event listener for triggering processing of user input on "+" button click
+addTodoBtnElement.addEventListener("click", addTodoItem);
+
+// Event listener for triggering processing of user input on "Enter" key press
+todoInputElement.addEventListener("keyup", (e) => {
+  if (e.key === "Enter") {
+    addTodoItem();
+  }
 });
 
 function addTodoItem() {
-    const todoTitle = todoInputElement.value.trim();
+  const todoText = todoInputElement.value.trim();
 
-    if (todoTitle !== "") {
-        createTodo(todoTitle);
-        todoInputElement.value = '';
-    }
+  if (todoText !== "") {
+    const savedTodo = saveToLocalStorage(todoText);
+    createTodo(savedTodo);
+
+    // changing savedTodos variable to reflect locally stored todos
+    savedTodos = JSON.parse(localStorage.getItem("todos"));
+    todoInputElement.value = "";
+  }
 }
 
 function createTodo(todo) {
-    const todoItem = document.createElement('div');
-    todoItem.classList.add('todo-item');
-    todoContainerElement.appendChild(todoItem);
+  const todoItem = createHTMLElement(todoContainerElement, "div", "todo-item");
+  const todoText = createHTMLElement(todoItem, "span", "todo-text");
+  const todoDone = createHTMLElement(todoItem, "input", "todo-done");
+  todoDone.type = "checkbox";
+  todoDone.name = "todo-done";
+  // changing checkbox state to reflect locally stored value
+  if (todo.isDone) {
+    todoDone.checked = true;
+    todoText.style.textDecoration = "line-through";
+  }
+  todoItem.insertBefore(todoDone, todoItem.firstChild);
+  const todoRemoveBtn = createHTMLElement(todoItem, "button", "remove-btn");
+  todoRemoveBtn.textContent = "Remove";
 
-    const todoTitle = document.createElement('span');
-    todoTitle.classList.add('todo-text');
-    todoItem.appendChild(todoTitle);
+  todoText.textContent = todo.text;
 
-    const todoActionBtns = document.createElement('div');
-    todoActionBtns.classList.add('todo-action-btns');
-    todoItem.appendChild(todoActionBtns);
+  // Done todo functionality
+  todoDone.addEventListener("change", () => {
+    todoText.style.textDecoration = todoDone.checked ? "line-through" : "";
 
-    const todoDoneBtn = document.createElement('img');
-    todoDoneBtn.src = "assets/media/done-icon.png"
-    todoActionBtns.appendChild(todoDoneBtn);
+    const todoToUpdate = savedTodos.find(
+      (savedTodo) => savedTodo.id === todo.id
+    );
 
-    const todoRemoveBtn = document.createElement('img');
-    todoRemoveBtn.src = "assets/media/remove-icon.png"
-    todoActionBtns.appendChild(todoRemoveBtn);
+    if (todoToUpdate) {
+      todoToUpdate.isDone = todoDone.checked;
+    }
 
-    todoTitle.textContent = todo;
-    let isDone = false;
+    localStorage.setItem("todos", JSON.stringify(savedTodos));
+  });
 
-    todoDoneBtn.addEventListener('click', (e) => {
-        todoTitle.style.textDecoration = (!todoTitle.style.textDecoration) ? "line-through" : "";
+  // Remove todo functionality
+  todoRemoveBtn.addEventListener("click", () => {
+    savedTodos = savedTodos.filter((savedTodo) => savedTodo.id !== todo.id);
+    localStorage.setItem("todos", JSON.stringify(savedTodos));
+    todoItem.remove();
+  });
+}
 
-        todoDoneBtn.src = isDone ? "assets/media/done-icon.png" : "assets/media/done-icon-blue.png";
-        isDone = !isDone;
-    })
+function saveToLocalStorage(todo) {
+  currentTodo = {
+    id: ++todoId,
+    text: todo,
+    isDone: false,
+  };
 
-    todoRemoveBtn.addEventListener('click', () => {
-        todoItem.remove();
-    })
+  savedTodos.push(currentTodo);
+  localStorage.setItem("todos", JSON.stringify(savedTodos));
+
+  return currentTodo;
+}
+
+function createHTMLElement(parentElement, elementName, className) {
+  const element = document.createElement(elementName);
+  element.classList.add(className);
+  parentElement.appendChild(element);
+  return element;
 }
